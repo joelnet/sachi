@@ -1,0 +1,12 @@
+plugins:
+  - prettier
+env:
+  node: true
+  es6: true
+parserOptions:
+  ecmaVersion: 8
+  sourceType: module
+rules:
+  prettier/prettier: error
+  no-unused-vars: error
+  no-undef: error

@@ -1,0 +1,35 @@
+{
+  "name": "sachi",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "sachi": "lib/index.js"
+  },
+  "scripts": {
+    "build": "npm run clean && babel src --out-dir lib --copy-files --verbose",
+    "clean": "rimraf lib",
+    "lint": "eslint src",
+    "test": "jest",
+    "watch": "npm run build -- --watch"
+  },
+  "author": "Joel Thoms",
+  "license": "MIT",
+  "dependencies": {
+    "babel-eslint": "^10.0.1",
+    "chalk": "^2.4.2",
+    "config": "^3.0.1",
+    "inquirer": "^6.2.2",
+    "js-yaml": "^3.12.1",
+    "mojiscript": "^0.12.1",
+    "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.13.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.16.4",
+    "rimraf": "^2.6.3"
+  }
+}

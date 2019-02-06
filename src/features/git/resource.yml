@@ -1,0 +1,7 @@
+no-git-repository: 'fatal: Not a git repository ({{CWD}})'
+has-git-repository: 'git repository detected ({{CWD}})'
+no-initial-commit: 'fatal: your current branch does not have any commits yet'
+has-initial-commit: 'git repository has initial commit'
+initialize-git: Initialize GIT?
+abort-git: You can lead a horse to water...
+abort-commits: It's your funeral...
