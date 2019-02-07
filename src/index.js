@@ -13,4 +13,4 @@ const loadConfig = pipe([
 
 const options = loadConfig()
 
-main({ options })
+main({ options }).catch(err => (err && err.abort ? null : console.error(err)))

@@ -1,0 +1,4 @@
+no-package-json: 'fatal: Not an NPM repository ({{CWD}})'
+has-package-json: 'NPM repository detected ({{CWD}})'
+initialize-npm: Create initial package.json?
+abort: Whatever you say. You're the boss...
