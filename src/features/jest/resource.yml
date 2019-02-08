@@ -1,0 +1,8 @@
+no-jest: 'warn: Jest is not installed'
+has-jest: Jest is installed
+topic: How would you like Jest installed?
+with-babel: Jest with Babel (recommended)
+without-babel: Jest only
+upgrade-babel: Add Babel to Jest
+cancel: None
+abort: Skipping installation of Jest

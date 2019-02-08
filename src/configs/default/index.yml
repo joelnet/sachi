@@ -1,3 +1,4 @@
 features:
   - git
   - npm
+  - jest
