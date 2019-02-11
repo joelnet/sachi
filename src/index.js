@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import fs from 'fs'
 import yaml from 'js-yaml'
-import pipe from 'mojiscript/core/pipe'
+import pipeSync from 'mojiscript/core/pipe/sync'
 import { join } from 'path'
 import main from './main'
 
-const loadConfig = pipe([
+const loadConfig = pipeSync([
   () => join(__dirname, '../config/default.yml'),
   fs.readFileSync,
   yaml.safeLoad

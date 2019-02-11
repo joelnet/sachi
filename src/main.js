@@ -1,20 +1,20 @@
 import fs from 'fs'
 import yaml from 'js-yaml'
+import pipeSync from 'mojiscript/core/pipe/sync'
 import { join } from 'path'
-import pipe from 'mojiscript/core/pipe'
 import promiseSerial from './lib/promiseSerial'
 
 const getConfigName = options => options.config || 'default'
 
-const loadConfig = pipe([
+const loadConfig = pipeSync([
   name => join(__dirname, `./configs/${name}/index.yml`),
   fs.readFileSync,
   yaml.safeLoad
 ])
 
-const optionsToConfig = pipe([getConfigName, loadConfig])
+const optionsToConfig = pipeSync([getConfigName, loadConfig])
 
-const optionsToFeatures = pipe([optionsToConfig, config => config.features])
+const optionsToFeatures = pipeSync([optionsToConfig, config => config.features])
 
 const main = async ({ options }) => {
   const features = await optionsToFeatures(options)
