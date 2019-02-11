@@ -1,4 +1,7 @@
 features:
-  - git
-  - npm
-  - jest
+  git:
+    required: true
+  npm:
+    required: true
+  jest:
+    description: Jest - Delightful JavaScript Testing Framework with a focus on simplicity
