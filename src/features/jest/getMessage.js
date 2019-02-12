@@ -9,9 +9,6 @@ const loadResources = pipeSync([
   yaml.safeLoad
 ])
 
-const getMessage = pipeSync([
-  key => loadResources()[key],
-  value => value.replace(/{{CWD}}/g, process.cwd())
-])
+const getMessage = key => loadResources()[key]
 
 export default getMessage

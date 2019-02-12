@@ -1,10 +1,12 @@
 import pipe from 'mojiscript/core/pipe'
 import shell from 'shelljs'
-import checkInstallStep from './steps/checkInstallStep'
+import checkInstallStep, { testInstall } from './steps/checkInstallStep'
 
-const npmFeature = pipe([
+const jestFeature = pipe([
   () => Promise.resolve(shell.config.reset()),
   checkInstallStep
 ])
 
-export default npmFeature
+export default jestFeature
+
+export const test = testInstall

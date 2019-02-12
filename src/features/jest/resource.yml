@@ -6,3 +6,6 @@ without-babel: Jest only
 upgrade-babel: Add Babel to Jest
 cancel: None
 abort: Skipping installation of Jest
+test-no-jest: Jest - Delightful JavaScript Testing
+test-has-jest-no-babel: Jest is installed
+test-has-jest-and-babel: Jest and Babel jest are installed

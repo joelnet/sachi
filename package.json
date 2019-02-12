@@ -9,8 +9,9 @@
     "build": "npm run clean && babel src --out-dir lib --copy-files --verbose",
     "clean": "rimraf lib",
     "lint": "eslint src",
+    "watch": "npm run build -- --watch",
     "test": "jest",
-    "watch": "npm run build -- --watch"
+    "test:coverage": "npm run test -- --coverage"
   },
   "author": "Joel Thoms",
   "license": "MIT",

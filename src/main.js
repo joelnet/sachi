@@ -15,6 +15,16 @@ const optionsToFeatures = pipeSync([optionsToConfig, config => config.features])
 const isRequired = ([, value]) => value && value.required
 const isNotRequired = o => !isRequired(o)
 
+const createChoices = features =>
+  Promise.all([
+    ...features.map(([name]) =>
+      require(join(__dirname, `./features/${name}`))
+        .test()
+        .then(longName => ({ name: longName, value: name }))
+    ),
+    'Done'
+  ])
+
 const main = async ({ options }) => {
   const features = await optionsToFeatures(options)
   const requiredFeatures = Object.entries(features).filter(isRequired)
@@ -29,24 +39,17 @@ const main = async ({ options }) => {
       .prompt([
         {
           name: 'choice',
-          message: 'Feature List',
-          choices: [
-            ...optionalFeatures.map(([, feature]) => feature.description),
-            'Done'
-          ],
+          message: 'Available Features:',
+          choices: () => createChoices(optionalFeatures),
           type: 'list'
         }
       ])
-      .then(({ choice }) =>
-        optionalFeatures
-          .filter(([, o]) => o.description === choice)
-          .map(([feature]) => feature)
+      .then(
+        ({ choice }) =>
+          choice !== 'Done' &&
+          require(join(__dirname, `./features/${choice}`)).default()
       )
-      .then(features =>
-        features.map(feature =>
-          require(join(__dirname, `./features/${feature}`)).default()
-        )
-      )
+      .then(result => result !== false && optional())
 
   return promiseSerial(required).then(optional)
 }
