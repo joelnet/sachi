@@ -1,28 +1,16 @@
 import chalk from 'chalk'
 import child_process from 'child_process'
-import fs from 'fs-extra'
-import inquirer from 'inquirer'
 import pipe from 'mojiscript/core/pipe'
 import ifElse from 'mojiscript/logic/ifElse'
-import { join } from 'path'
 import getMessage from '../getMessage'
+import hasPackageJson from './lib/hasPackageJson'
+import { isConfirmed, promptForConfirmation } from './lib/promptForConfirmation'
 
 const sayNoPackageJson = () =>
-  console.log(`${chalk.red('❌')} ${getMessage('no-package-json')}`)
+  console.log(`${chalk.red('❌')}  ${getMessage('no-package-json')}`)
 
 const sayHasPackageJson = () =>
-  console.log(`${chalk.green('✔')} ${getMessage('has-package-json')}`)
-
-const promptForConfirmation = () =>
-  inquirer.prompt([
-    {
-      name: 'confirmed',
-      message: getMessage('initialize-npm'),
-      type: 'confirm'
-    }
-  ])
-
-const isConfirmed = o => o.confirmed
+  console.log(`${chalk.green('✔')}  ${getMessage('has-package-json')}`)
 
 const npmInit = pipe([
   () => child_process.execFileSync('npm', ['init'], { stdio: 'inherit' }),
@@ -30,7 +18,7 @@ const npmInit = pipe([
 ])
 
 const abort = pipe([
-  () => console.log(`${chalk.red('abort:')} ${getMessage('abort')}`),
+  () => console.log(`${chalk.red('abort:')}  ${getMessage('abort')}`),
   () => Promise.reject({ abort: true })
 ])
 
@@ -39,9 +27,6 @@ const maybeNpmInit = pipe([
   promptForConfirmation,
   ifElse(isConfirmed)(npmInit)(abort)
 ])
-
-const hasPackageJson = () =>
-  fs.pathExistsSync(join(process.cwd(), 'package.json'))
 
 const checkInstallStep = pipe([
   ifElse(hasPackageJson)(sayHasPackageJson)(maybeNpmInit)
