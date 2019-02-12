@@ -1,11 +1,13 @@
 import chalk from 'chalk'
-import fs from 'fs-extra'
-import inquirer from 'inquirer'
+import child_process from 'child_process'
 import pipe from 'mojiscript/core/pipe'
 import ifElse from 'mojiscript/logic/ifElse'
-import { join } from 'path'
-import shell from 'shelljs'
 import getMessage from '../getMessage'
+import hasGitDirectory from '../lib/hasGitDirectory'
+import {
+  isConfirmed,
+  promptForConfirmation
+} from '../lib/promptForConfirmation'
 
 const sayNoGitRepository = () =>
   console.log(`${chalk.red('❌')} ${getMessage('no-git-repository')}`)
@@ -13,18 +15,10 @@ const sayNoGitRepository = () =>
 const sayHasGitRepository = () =>
   console.log(`${chalk.green('✔')} ${getMessage('has-git-repository')}`)
 
-const promptForConfirmation = () =>
-  inquirer.prompt([
-    {
-      name: 'confirmed',
-      message: getMessage('initialize-git'),
-      type: 'confirm'
-    }
-  ])
-
-const isConfirmed = o => o.confirmed
-
-const installGit = pipe([() => shell.exec('git init'), sayHasGitRepository])
+const installGit = pipe([
+  () => child_process.execFileSync('git', ['init'], { stdio: 'inherit' }),
+  sayHasGitRepository
+])
 
 const abort = pipe([
   () => console.log(`${chalk.red('abort:')} ${getMessage('abort-git')}`),
@@ -37,11 +31,8 @@ const maybeInstallGit = pipe([
   ifElse(isConfirmed)(installGit)(abort)
 ])
 
-const hasGitDirectory = () => fs.pathExists(join(process.cwd(), '.git'))
-
 const checkInstallStep = pipe([
-  hasGitDirectory,
-  ifElse(x => x)(sayHasGitRepository)(maybeInstallGit)
+  ifElse(hasGitDirectory)(sayHasGitRepository)(maybeInstallGit)
 ])
 
 export default checkInstallStep
