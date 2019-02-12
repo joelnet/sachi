@@ -40,11 +40,11 @@ const maybeNpmInit = pipe([
   ifElse(isConfirmed)(npmInit)(abort)
 ])
 
-const hasPackageJson = () => fs.pathExists(join(process.cwd(), 'package.json'))
+const hasPackageJson = () =>
+  fs.pathExistsSync(join(process.cwd(), 'package.json'))
 
 const checkInstallStep = pipe([
-  hasPackageJson,
-  ifElse(x => x)(sayHasPackageJson)(maybeNpmInit)
+  ifElse(hasPackageJson)(sayHasPackageJson)(maybeNpmInit)
 ])
 
 export default checkInstallStep

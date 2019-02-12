@@ -7,11 +7,9 @@ import cond from 'mojiscript/logic/cond'
 import ifElse from 'mojiscript/logic/ifElse'
 import { join } from 'path'
 import getMessage from '../getMessage'
-import updatePackageJson from '../lib/updatePackageJson'
 import createTestFiles from '../lib/createTestFiles'
 import updateEslint from '../lib/updateEslint'
-
-// TODO: When installing Jest, modify package.json
+import updatePackageJson from '../lib/updatePackageJson'
 
 const hasJest = o => o.jest
 const hasJestNoBabel = o => o.jest && !o['babel-jest']
@@ -82,8 +80,8 @@ export const getJestState = () =>
     .readFile(join(process.cwd(), 'package.json'), 'utf8')
     .then(file => JSON.parse(file))
     .then(packageJson => ({
-      jest: !!packageJson.devDependencies.jest,
-      'babel-jest': !!packageJson.devDependencies['babel-jest']
+      jest: !!(packageJson.devDependencies || {}).jest,
+      'babel-jest': !!(packageJson.devDependencies || {})['babel-jest']
     }))
 
 const checkInstallStep = pipe([
@@ -100,7 +98,7 @@ export const testInstall = pipe([
     ],
     [
       hasJestAndBabel,
-      `${chalk.green('✔')} ${getMessage('test-has-jest-and-babel')} ${chalk.green('✔')}` // prettier-ignore
+      `${chalk.green('✔')} ${getMessage('test-has-jest-and-babel')}`
     ],
     [() => true, `${chalk.yellow('⚠️')}  ${getMessage('test-no-jest')}`]
   ])
