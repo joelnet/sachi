@@ -3,8 +3,11 @@ import child_process from 'child_process'
 import pipe from 'mojiscript/core/pipe'
 import ifElse from 'mojiscript/logic/ifElse'
 import getMessage from '../getMessage'
-import hasPackageJson from './lib/hasPackageJson'
-import { isConfirmed, promptForConfirmation } from './lib/promptForConfirmation'
+import hasPackageJson from '../lib/hasPackageJson'
+import {
+  isConfirmed,
+  promptForConfirmation
+} from '../lib/promptForConfirmation'
 
 const sayNoPackageJson = () =>
   console.log(`${chalk.red('❌')}  ${getMessage('no-package-json')}`)

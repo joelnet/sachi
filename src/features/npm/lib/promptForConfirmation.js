@@ -1,5 +1,5 @@
 import inquirer from 'inquirer'
-import getMessage from '../../getMessage'
+import getMessage from '../getMessage'
 
 const createConfirm = message => ({
   name: 'confirmed',
