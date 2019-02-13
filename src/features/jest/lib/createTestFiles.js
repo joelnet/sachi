@@ -3,6 +3,7 @@ import pipe from 'mojiscript/core/pipe'
 import ifElse from 'mojiscript/logic/ifElse'
 import { join } from 'path'
 
+const testFolder = join(process.cwd(), 'src/__tests__')
 const testFilePath = join(process.cwd(), 'src/__tests__/index.test.js')
 
 const testFile = `describe('index', () => {
@@ -12,11 +13,10 @@ const testFile = `describe('index', () => {
 `
 
 const testFileExists = () => fs.existsSync(testFilePath)
-const writeTestFile = () =>
-  fs.writeFile(join(process.cwd(), 'src/__tests__/index.test.js'), testFile)
+const writeTestFile = () => fs.writeFile(testFilePath, testFile)
 
 const createTestFiles = pipe([
-  () => fs.ensureDir(join(process.cwd(), 'src/__tests__')),
+  () => fs.ensureDir(testFolder),
   ifElse(testFileExists)(() => null)(writeTestFile)
 ])
 

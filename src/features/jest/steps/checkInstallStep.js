@@ -1,44 +1,20 @@
 import chalk from 'chalk'
 import child_process from 'child_process'
-import fs from 'fs-extra'
-import inquirer from 'inquirer'
 import pipe from 'mojiscript/core/pipe'
-import cond from 'mojiscript/logic/cond'
 import ifElse from 'mojiscript/logic/ifElse'
-import { join } from 'path'
 import getMessage from '../getMessage'
 import createTestFiles from '../lib/createTestFiles'
-import updateEslint from '../lib/updateEslint'
-import updatePackageJson from '../lib/updatePackageJson'
+import updatePackageJson, { readPackageJson } from '../lib/updatePackageJson'
 
-const hasJest = o => o.jest
-const hasJestNoBabel = o => o.jest && !o['babel-jest']
-const hasJestAndBabel = o => o.jest && o['babel-jest']
+const messageJestInstalled = () =>
+  `${chalk.green('✔')} ${getMessage('description')}`
 
-export const sayJestInstalled = () =>
-  console.log(`${chalk.green('✔')} ${getMessage('has-jest')}`)
+const messageJestNotInstalled = () =>
+  `${chalk.yellow('⚠️')} ${getMessage('description')}`
 
-const createChoices = state => [
-  ...(hasJest(state)
-    ? []
-    : [getMessage('with-babel'), getMessage('without-babel')]),
-  ...(!hasJestNoBabel(state) ? [] : [getMessage('upgrade-babel')]),
-  getMessage('cancel')
-]
+const sayJestInstalled = () => console.log(messageJestInstalled())
 
-const promptForConfirmation = state =>
-  inquirer.prompt([
-    {
-      name: 'choice',
-      message: getMessage('topic'),
-      choices: createChoices(state),
-      type: 'list'
-    }
-  ])
-
-const choseWithBabel = ({ choice }) => choice === getMessage('with-babel')
-const choseJestOnly = ({ choice }) => choice === getMessage('without-babel')
-const choseUpgradeBabel = ({ choice }) => choice === getMessage('upgrade-babel')
+const hasJest = (o = {}) => !!o.jest
 
 const npmInstall = packageName =>
   child_process.execFileSync('npm', ['install', packageName, '--save-dev'], {
@@ -46,62 +22,27 @@ const npmInstall = packageName =>
   })
 
 const installJest = pipe([
-  () => npmInstall('jest'),
+  () => npmInstall('jest@^24'),
   updatePackageJson,
   createTestFiles,
-  updateEslint,
-  sayJestInstalled
-])
-const installBabelJest = pipe([
-  () => npmInstall('babel-jest'),
-  updatePackageJson,
-  createTestFiles,
-  updateEslint,
   sayJestInstalled
 ])
 
-const abort = pipe([
-  () => console.log(`${chalk.yellow('skip:')} ${getMessage('abort')}`),
-  () => Promise.resolve()
+export const getJestState = pipe([
+  readPackageJson,
+  packageJson => ({
+    jest: hasJest(packageJson.devDependencies)
+  })
 ])
-
-const promptUser = pipe([
-  promptForConfirmation,
-  cond([
-    [choseWithBabel, pipe([installJest, installBabelJest])],
-    [choseJestOnly, installJest],
-    [choseUpgradeBabel, installBabelJest],
-    [(() => true, abort)]
-  ])
-])
-
-export const getJestState = () =>
-  fs
-    .readFile(join(process.cwd(), 'package.json'), 'utf8')
-    .then(file => JSON.parse(file))
-    .then(packageJson => ({
-      jest: !!(packageJson.devDependencies || {}).jest,
-      'babel-jest': !!(packageJson.devDependencies || {})['babel-jest']
-    }))
 
 const checkInstallStep = pipe([
   getJestState,
-  ifElse(o => !o.jest || !o['babel-jest'])(promptUser)(sayJestInstalled)
+  ifElse(hasJest)(sayJestInstalled)(installJest)
 ])
 
 export const testInstall = pipe([
   getJestState,
-  cond([
-    [
-      hasJestNoBabel,
-      `${chalk.green('✔')} ${getMessage('test-has-jest-no-babel')}`
-    ],
-    [
-      hasJestAndBabel,
-      `${chalk.green('✔')} ${getMessage('test-has-jest-and-babel')}`
-    ],
-    [() => true, `${chalk.yellow('⚠️')}  ${getMessage('test-no-jest')}`]
-  ])
+  ifElse(hasJest)(messageJestInstalled)(messageJestNotInstalled)
 ])
 
 export default checkInstallStep

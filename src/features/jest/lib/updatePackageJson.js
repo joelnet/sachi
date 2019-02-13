@@ -3,7 +3,7 @@ import { join } from 'path'
 import fs from 'fs-extra'
 import tap from 'mojiscript/function/tap'
 
-const readPackageJson = pipe([
+export const readPackageJson = pipe([
   () => fs.readFile(join(process.cwd(), 'package.json'), 'utf8'),
   text => JSON.parse(text)
 ])
