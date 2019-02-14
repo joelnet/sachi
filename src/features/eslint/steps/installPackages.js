@@ -12,11 +12,14 @@ const npmInstall = packageName =>
 const hasPrettier = state => state.prettier
 
 const installEslint = () => npmInstall(getMessage('eslint'))
-const installPlugin = () => npmInstall(getMessage('eslint-plugin-prettier'))
+const installPlugins = pipe([
+  () => npmInstall(getMessage('eslint-plugin-prettier')),
+  () => npmInstall(getMessage('eslint-config-prettier'))
+])
 
 const installPackages = pipe([
   tap(installEslint),
-  when(hasPrettier)(tap(installPlugin))
+  when(hasPrettier)(tap(installPlugins))
 ])
 
 export default installPackages

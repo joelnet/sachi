@@ -60,13 +60,23 @@ const setRules = pipe([
   }))
 ])
 
+const setExtends = pipe([
+  obj => ({ ...obj, extends: obj.extends || [] }),
+  when(obj => obj.extends.indexOf('plugin:prettier/recommended') === -1)(
+    obj => ({
+      ...obj,
+      extends: ['plugin:prettier/recommended', ...obj.extends]
+    })
+  )
+])
+
 const setEslintConfig = W(config =>
   pipe([
     () => fs.ensureFile(fileName),
     readEslintRc,
     setEnvDefaults(config),
     setParserOptions,
-    when(() => config.prettier)(pipe([setPlugins, setRules])),
+    when(() => config.prettier)(pipe([setPlugins, setRules, setExtends])),
     writeEslintRc
   ])
 )
