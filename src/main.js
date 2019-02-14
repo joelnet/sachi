@@ -1,8 +1,9 @@
+import inquirer from 'inquirer'
+import pipe from 'mojiscript/core/pipe'
 import pipeSync from 'mojiscript/core/pipe/sync'
 import { join } from 'path'
-import promiseSerial from './lib/promiseSerial'
 import loadYaml from './lib/loadYaml'
-import inquirer from 'inquirer'
+import promiseSerial from './lib/promiseSerial'
 
 const getConfigName = options => options.config || 'default'
 
@@ -34,22 +35,21 @@ const main = async ({ options }) => {
     ([feature]) => require(join(__dirname, `./features/${feature}`)).default
   )
 
-  const optional = () =>
-    inquirer
-      .prompt([
+  const optional = pipe([
+    () =>
+      inquirer.prompt([
         {
           name: 'choice',
           message: 'Available Features:',
           choices: () => createChoices(optionalFeatures),
           type: 'list'
         }
-      ])
-      .then(
-        ({ choice }) =>
-          choice !== 'Done' &&
-          require(join(__dirname, `./features/${choice}`)).default()
-      )
-      .then(result => result !== false && optional())
+      ]),
+    ({ choice }) =>
+      choice !== 'Done' &&
+      require(join(__dirname, `./features/${choice}`)).default(),
+    result => result !== false && optional()
+  ])
 
   return promiseSerial(required).then(optional)
 }

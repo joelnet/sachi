@@ -1,0 +1,3 @@
+description: ESLint - The pluggable linting utility for JavaScript and JSX
+eslint: eslint@^5.13
+eslint-plugin-prettier: eslint-plugin-prettier@^3.0

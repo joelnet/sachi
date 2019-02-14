@@ -1,9 +1,13 @@
 #!/usr/bin/env node
-import main from './main'
-import loadYaml from './lib/loadYaml'
+import when from 'mojiscript/logic/when'
 import { join } from 'path'
+import loadYaml from './lib/loadYaml'
+import main from './main'
 
 const configName = join(__dirname, '../config/default.yml')
 const options = loadYaml(configName)
 
-main({ options }).catch(err => (err && err.abort ? null : console.error(err)))
+const hasError = err => err && !err.abort
+const handleException = when(hasError)(console.error)
+
+main({ options }).catch(handleException)

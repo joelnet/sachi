@@ -4,8 +4,8 @@ import I from 'mojiscript/combinators/I'
 import pipe from 'mojiscript/core/pipe'
 import ifElse from 'mojiscript/logic/ifElse'
 import getMessage from './lib/getMessage'
-import { readPackageJson } from './lib/updatePackageJson'
 import setPrettierConfig from './lib/setPrettierConfig'
+import { readPackageJson } from './lib/updatePackageJson'
 
 const hasPrettier = (o = {}) => !!o.prettier
 
@@ -16,10 +16,10 @@ const getState = pipe([
   })
 ])
 
-const messageJestInstalled = () =>
+const messageInstalled = () =>
   `${chalk.green('✔')} ${getMessage('description')}`
 
-const messageJestNotInstalled = () =>
+const messageNotInstalled = () =>
   `${chalk.yellow('⚠️')} ${getMessage('description')}`
 
 const npmInstall = packageName =>
@@ -41,7 +41,7 @@ const maybeInstallPrettier = pipe([
 
 export const test = pipe([
   getState,
-  ifElse(hasPrettier)(messageJestInstalled)(messageJestNotInstalled)
+  ifElse(hasPrettier)(messageInstalled)(messageNotInstalled)
 ])
 
 export default maybeInstallPrettier
