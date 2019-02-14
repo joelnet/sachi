@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import yaml from 'js-yaml'
 import W from 'mojiscript/combinators/W'
 import pipe from 'mojiscript/core/pipe'
+import tap from 'mojiscript/function/tap'
 import when from 'mojiscript/logic/when'
 import { join } from 'path'
 
@@ -70,4 +71,4 @@ const setEslintConfig = W(config =>
   ])
 )
 
-export default setEslintConfig
+export default tap(setEslintConfig)
