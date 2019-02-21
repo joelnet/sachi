@@ -1,15 +1,18 @@
 import fs from 'fs-extra'
 import yaml from 'js-yaml'
+import I from 'mojiscript/combinators/I'
 import W from 'mojiscript/combinators/W'
 import pipe from 'mojiscript/core/pipe'
 import tap from 'mojiscript/function/tap'
+import ifElse from 'mojiscript/logic/ifElse'
 import when from 'mojiscript/logic/when'
 import { join } from 'path'
 
 const fileName = join(process.cwd(), '.eslintrc.yml')
 
 const readEslintRc = pipe([
-  () => fs.readFile(fileName),
+  () => fs.exists(fileName),
+  ifElse(I)(() => fs.readFile(fileName))(() => ''),
   yaml.safeLoad,
   eslintrc => eslintrc || {}
 ])
@@ -20,6 +23,7 @@ const writeEslintRc = pipe([
 ])
 
 const setEnvDefaults = config =>
+  console.log({ config }) ||
   pipe([
     obj => ({ ...obj, env: obj.env || {} }),
     obj => ({
@@ -72,7 +76,6 @@ const setExtends = pipe([
 
 const setEslintConfig = W(config =>
   pipe([
-    () => fs.ensureFile(fileName),
     readEslintRc,
     setEnvDefaults(config),
     setParserOptions,
@@ -80,5 +83,10 @@ const setEslintConfig = W(config =>
     writeEslintRc
   ])
 )
+
+export const hasPrettierRules = pipe([
+  readEslintRc,
+  config => !!(config.rules || {})['prettier/prettier']
+])
 
 export default tap(setEslintConfig)
