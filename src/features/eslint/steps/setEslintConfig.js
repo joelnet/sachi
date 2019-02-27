@@ -22,19 +22,19 @@ const writeEslintRc = pipe([
   text => fs.writeFile(fileName, text)
 ])
 
-const setEnvDefaults = config =>
-  console.log({ config }) ||
-  pipe([
-    obj => ({ ...obj, env: obj.env || {} }),
-    obj => ({
-      ...obj,
-      env: { ...obj.env, es6: obj.env.es6 || true }
-    }),
-    when(() => config.jest)(obj => ({
-      ...obj,
-      env: { ...obj.env, jest: obj.env.jest || true }
-    }))
-  ])
+const setEnvDefaults = pipe([
+  obj => ({ ...obj, env: obj.env || {} }),
+  obj => ({
+    ...obj,
+    env: {
+      ...obj.env,
+      es6: obj.env.es6 || true,
+      node: obj.env.node || true,
+      browser: obj.env.browser || true,
+      jest: obj.env.jest || true
+    }
+  })
+])
 
 const setParserOptions = pipe([
   obj => ({ ...obj, parserOptions: obj.parserOptions || {} }),
@@ -77,7 +77,7 @@ const setExtends = pipe([
 const setEslintConfig = W(config =>
   pipe([
     readEslintRc,
-    setEnvDefaults(config),
+    setEnvDefaults,
     setParserOptions,
     when(() => config.prettier)(pipe([setPlugins, setRules, setExtends])),
     writeEslintRc
