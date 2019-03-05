@@ -3,6 +3,7 @@ export const INITIAL_COMMIT = 'initial-commit'
 export const GIT_IGNORE = 'git-ignore'
 export const DONE = 'Done'
 export const ABORT = 'abort'
+export const NONE = ''
 
 export const getDefaultChoice = choices =>
   choices.find(o => o.value === INITIALIZE_GIT) ? INITIALIZE_GIT
