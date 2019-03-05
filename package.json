@@ -6,7 +6,7 @@
     "sachi": "lib/index.js"
   },
   "scripts": {
-    "build": "npm run clean && babel src --out-dir lib --copy-files --verbose",
+    "build": "npm run clean && babel src --out-dir lib --copy-files --verbose --source-maps",
     "clean": "rimraf lib",
     "lint": "eslint src",
     "watch": "npm run build -- --watch",
@@ -33,6 +33,7 @@
     "eslint": "^5.13.0",
     "eslint-plugin-prettier": "^3.0.1",
     "prettier": "^1.16.4",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "source-map-support": "^0.5.10"
   }
 }

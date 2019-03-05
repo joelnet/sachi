@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'source-map-support/register'
 import when from 'mojiscript/logic/when'
 import { join } from 'path'
 import loadYaml from './lib/loadYaml'
