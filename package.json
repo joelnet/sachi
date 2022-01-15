@@ -24,7 +24,7 @@
     "js-yaml": "^3.13.1",
     "mojiscript": "^0.12.3",
     "ramda": "^0.26.1",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
